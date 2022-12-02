@@ -1,5 +1,5 @@
 [package]
-name = "Rustvent2022"
+name = "rustvent2022"
 version = "0.1.0"
 edition = "2021"
 
@@ -12,3 +12,4 @@ name = "day02"
 path = "src/day02.rs"
 
 [dependencies]
+curl = "0.4.44"

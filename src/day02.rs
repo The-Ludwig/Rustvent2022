@@ -1,4 +1,4 @@
-use std::fs;
+use rustvent2022::get_input;
 use std::io;
 
 #[derive(Debug, PartialEq)]
@@ -74,9 +74,7 @@ impl RPS {
     }
 }
 
-fn parse(filename: &str) -> io::Result<Vec<Vec<RPS>>> {
-    let input = fs::read_to_string(filename)?;
-
+fn parse(input: &str) -> io::Result<Vec<Vec<RPS>>> {
     Ok(input
         .lines()
         .map(|line| {
@@ -111,7 +109,7 @@ fn part_two(input: &Vec<Vec<RPS>>) -> i32 {
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error + 'static>> {
-    let input = parse("inputs/day02").unwrap();
+    let input = parse(&get_input("2022", "2")).unwrap();
     println!("Solution part one: {}", part_one(&input));
     println!("Solution part two: {}", part_two(&input));
     Ok(())
