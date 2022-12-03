@@ -1,4 +1,5 @@
 use rustvent2022::get_input;
+use std::fs;
 use std::io;
 
 #[derive(Debug, PartialEq)]
@@ -26,13 +27,13 @@ enum RPS {
 }
 
 impl RPS {
-    fn from_char(c: &str) -> Result<RPS, ()> {
+    fn from_char(c: &str) -> Result<RPS, String> {
         use RPS::*;
         match c {
             "A" | "X" => Ok(Rock),
             "B" | "Y" => Ok(Paper),
             "C" | "Z" => Ok(Scissors),
-            _ => Err(()),
+            _ => Err(format!("Could not match character {c}")),
         }
     }
 
@@ -122,7 +123,7 @@ mod tests {
     #[test]
     fn test_parse() {
         use RPS::*;
-        let input = parse("inputs/day02_test").unwrap();
+        let input = parse(&fs::read_to_string("inputs/day02_test").unwrap()).unwrap();
         assert_eq!(
             input,
             vec![
@@ -135,13 +136,13 @@ mod tests {
 
     #[test]
     fn test_part_one() {
-        let input = parse("inputs/day02_test").unwrap();
+        let input = parse(&fs::read_to_string("inputs/day02_test").unwrap()).unwrap();
         assert_eq!(part_one(&input), 15);
     }
 
     #[test]
     fn test_part_two() {
-        let input = parse("inputs/day02_test").unwrap();
+        let input = parse(&fs::read_to_string("inputs/day02_test").unwrap()).unwrap();
         assert_eq!(part_two(&input), 12);
     }
 }
