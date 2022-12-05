@@ -1,6 +1,5 @@
 use regex::Regex;
 use rustvent2022::get_input;
-use std::io;
 use std::str::FromStr;
 
 type Input = (Vec<Vec<char>>, Vec<(usize, usize, usize)>);
@@ -80,7 +79,7 @@ fn part_two(instructions: &Vec<(usize, usize, usize)>, stacks: &mut Vec<Vec<char
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error + 'static>> {
-    let (mut stacks, instructions) = parse(&get_input("2022", "5"));
+    let (stacks, instructions) = parse(&get_input("2022", "5"));
     println!(
         "Solution part one: {}",
         part_one(&instructions, &mut stacks.clone())
