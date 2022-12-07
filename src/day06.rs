@@ -52,6 +52,6 @@ mod tests {
     fn test() {
         let test = "bvwbjplbgvbhsrlpgdmjqwftvncz";
         assert_eq!(part(&test, 4), 5);
-        assert_eq!(part(&test, 14), 19);
+        assert_eq!(part(&test, 14), 23);
     }
 }
