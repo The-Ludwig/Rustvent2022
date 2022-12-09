@@ -1,5 +1,4 @@
 use rustvent2022::get_input;
-use std::io;
 use std::str::FromStr;
 
 #[derive(Debug, std::cmp::PartialEq)]
@@ -9,6 +8,8 @@ struct Interval<T: std::cmp::PartialOrd> {
 }
 
 impl<T: std::cmp::PartialOrd> Interval<T> {
+    // needed for testing
+    #[allow(dead_code)]
     fn new(low: T, high: T) -> Interval<T> {
         Interval::<T> { low, high }
     }
