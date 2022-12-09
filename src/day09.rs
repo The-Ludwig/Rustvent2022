@@ -8,6 +8,10 @@ enum Direction {
     L,
     U,
     D,
+    UR,
+    UL,
+    DR,
+    DL,
 }
 
 #[derive(Debug, PartialEq)]
@@ -50,24 +54,49 @@ impl FromStr for Instruction {
     }
 }
 
-struct Marker<'a> {
+#[derive(Clone)]
+struct Marker {
     x: isize,
     y: isize,
     visited: HashSet<(isize, isize)>,
-    son: Option<&'a mut Marker<'a>>,
 }
 
-impl<'a> Marker<'a> {
-    fn new(son: Option<&'a mut Marker<'a>>) -> Self {
+impl Marker {
+    fn new() -> Self {
         Marker {
             x: 0,
             y: 0,
             visited: HashSet::from([(0, 0)]),
-            son: son,
         }
     }
 
-    fn follow(&mut self, other: &'a mut Marker<'a>) {}
+    fn follow(&mut self, other: &Marker) {
+        if (self.x - other.x).abs() > 1 && self.y == other.y {
+            if self.x < other.x {
+                self.move_dir(&Direction::R);
+            } else {
+                self.move_dir(&Direction::L);
+            }
+        } else if (self.y - other.y).abs() > 1 && self.x == other.x {
+            if self.y < other.y {
+                self.move_dir(&Direction::U);
+            } else {
+                self.move_dir(&Direction::D);
+            }
+        } else if (self.y - other.y).abs() > 1 || (self.x - other.x).abs() > 1 {
+            if self.x < other.x && self.y < other.y {
+                self.move_dir(&Direction::UR);
+            } else if self.x < other.x && self.y > other.y {
+                self.move_dir(&Direction::DR);
+            } else if self.x > other.x && self.y < other.y {
+                self.move_dir(&Direction::UL);
+            } else if self.x > other.x && self.y > other.y {
+                self.move_dir(&Direction::DL);
+            } else {
+                panic!("Not a valid position");
+            }
+        }
+    }
 
     fn move_dir(&mut self, dir: &Direction) {
         match dir {
@@ -75,16 +104,24 @@ impl<'a> Marker<'a> {
             Direction::L => self.x -= 1,
             Direction::U => self.y += 1,
             Direction::D => self.y -= 1,
+            Direction::UR => {
+                self.x += 1;
+                self.y += 1;
+            }
+            Direction::UL => {
+                self.x -= 1;
+                self.y += 1;
+            }
+            Direction::DR => {
+                self.y -= 1;
+                self.x += 1;
+            }
+            Direction::DL => {
+                self.y -= 1;
+                self.x -= 1;
+            }
         }
         self.visited.insert((self.x, self.y));
-
-        if let Some(son) = self.son {}
-    }
-
-    fn move_all(&mut self, inst: &Instruction) {
-        for _ in 0..inst.len {
-            self.move_dir(&inst.dir);
-        }
     }
 }
 
@@ -95,10 +132,37 @@ fn parse(input: &str) -> Vec<Instruction> {
         .collect()
 }
 
+fn part_one(input: &Vec<Instruction>) -> usize {
+    let mut h = Marker::new();
+    let mut t = Marker::new();
+
+    for instr in input {
+        for _ in 0..instr.len {
+            h.move_dir(&instr.dir);
+            t.follow(&h);
+        }
+    }
+    t.visited.len()
+}
+
+fn part_two(input: &Vec<Instruction>) -> usize {
+    let mut rope = vec![Marker::new(); 10];
+
+    for instr in input {
+        for _ in 0..instr.len {
+            rope[0].move_dir(&instr.dir);
+            for i in 1..rope.len() {
+                let par = rope[i - 1].clone();
+                rope[i].follow(&par);
+            }
+        }
+    }
+    rope.last().unwrap().visited.len()
+}
 fn main() -> Result<(), Box<dyn std::error::Error + 'static>> {
-    // let input = parse(&get_input("2022", "8"));
-    // println!("Solution part one: {}", part_one(&input));
-    // println!("Solution part two: {}", part_two(&input));
+    let input = parse(&get_input("2022", "9"));
+    println!("Solution part one: {}", part_one(&input));
+    println!("Solution part two: {}", part_two(&input));
     Ok(())
 }
 
@@ -128,17 +192,26 @@ R 2";
         );
     }
 
-    // #[test]
-    // fn test_part_two() {
-    //     let input = parse(TEST);
+    #[test]
+    fn test_part_one() {
+        let input = parse(TEST);
 
-    //     assert_eq!(part_two(&input), 8);
-    // }
+        assert_eq!(part_one(&input), 13);
+    }
 
-    // #[test]
-    // fn test_part_one() {
-    //     let input = parse(TEST);
+    const TEST_TWO: &str = r"R 5
+U 8
+L 8
+D 3
+R 17
+D 10
+L 25
+U 20";
 
-    //     assert_eq!(part_one(&input), 21);
-    // }
+    #[test]
+    fn test_part_two() {
+        let input = parse(TEST_TWO);
+
+        assert_eq!(part_two(&input), 36);
+    }
 }
