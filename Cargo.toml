@@ -43,6 +43,10 @@ path = "src/day09.rs"
 name = "day10"
 path = "src/day10.rs"
 
+[[bin]]
+name = "day11"
+path = "src/day11.rs"
+
 [dependencies]
 curl = "0.4.44"
 regex = "1"
