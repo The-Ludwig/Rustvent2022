@@ -1,8 +1,8 @@
+use regex::Regex;
 use rustvent2022::get_input;
 use std::error::Error;
-// use std::fmt;
-use regex::Regex;
 use std::str::FromStr;
+use std::time;
 
 #[derive(Debug, Clone, PartialEq)]
 struct Point {
@@ -156,7 +156,6 @@ fn part_two(f: &Field, max: isize) -> usize {
             } else {
                 panic!("oh fuck no");
             }
-            println!("{} {}", x, y);
         }
         x += 1;
     }
@@ -165,8 +164,18 @@ fn part_two(f: &Field, max: isize) -> usize {
 
 fn main() -> Result<(), Box<dyn std::error::Error + 'static>> {
     let input = Field::from_str(&get_input("2022", "15"))?;
-    println!("Solution part one: {}", part_one(&input, 2000000));
-    println!("Solution part one: {}", part_two(&input, 4000000));
+    let now = time::Instant::now();
+    let sol_p1 = part_one(&input, 2000000);
+    println!(
+        "Solution part one: {sol_p1} took: {}s",
+        now.elapsed().as_secs_f32()
+    );
+    let now = time::Instant::now();
+    let sol_p2 = part_two(&input, 4000000);
+    println!(
+        "Solution part two: {sol_p2} took: {}s",
+        now.elapsed().as_secs_f32()
+    );
     Ok(())
 }
 
